@@ -9,23 +9,34 @@ using SuperHeros_project.Models;
 
 namespace SuperHeros_project.Controllers
 {
-    public class SuperHeroController1 : Controller
+    public class SuperHeroController : Controller
     {
         private ApplicationDbContext db;
-        public SuperHeroController1(ApplicationDbContext db)
+        public SuperHeroController(ApplicationDbContext db)
         {
             this.db = db;
         }
         // GET: SuperHeroController1
         public ActionResult Index()
         {
-            return View();
+            //query db to get all superheros
+            //pass that into the view
+            var superheroList = db.superHeroes;
+            //if(superheroList == null)
+            //{
+            //    return RedirectToAction("Create");
+            //}
+
+            return View(superheroList);
         }
 
         // GET: SuperHeroController1/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var HeroDetail = db.superHeroes.Find(id);
+            //query db for the single superhero who has 'id'
+            //pass that into view
+            return View(HeroDetail);
         }
 
         // GET: SuperHeroController1/Create
@@ -54,16 +65,19 @@ namespace SuperHeros_project.Controllers
         // GET: SuperHeroController1/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var HeroEdit = db.superHeroes.Find(id);
+            return View(HeroEdit);
         }
 
         // POST: SuperHeroController1/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, SuperHero superHero)
         {
             try
             {
+                db.superHeroes.Update(superHero);
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -75,16 +89,20 @@ namespace SuperHeros_project.Controllers
         // GET: SuperHeroController1/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var HeroToRemove = db.superHeroes.Find(id);
+            
+            return View(HeroToRemove);
         }
 
         // POST: SuperHeroController1/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, SuperHero superHeroes)
         {
             try
             {
+                db.superHeroes.Remove(superHeroes);
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
